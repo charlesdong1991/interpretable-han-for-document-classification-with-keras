@@ -73,6 +73,8 @@ class HAN(Model):
         self.model = Model(text_input, output_tensor)
 
     def print_summary(self):
+        """Print the model summary for both word and sentence level model.
+        """
         print("Word Level")
         self.model_word.summary()
 

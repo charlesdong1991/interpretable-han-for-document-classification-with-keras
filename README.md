@@ -14,7 +14,7 @@ from han.model import HAN
 han = HAN(embedding_matrix)
 ```
 
-⋅⋅⋅You would like to change value of parameters during the initialization, for instance:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;You would like to change value of parameters during the initialization, for instance:
 
 ```python
 han = HAN(embedding_matrix, max_sent_length=150, max_sent_num=15)

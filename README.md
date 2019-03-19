@@ -33,4 +33,16 @@ han.train_model(checkpoint_path, X_train, y_train, X_test, y_test)
 ```python
 han.show_word_attention(X)
 ```
-X is the embedded matrix vector for one review.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`X` is the embedded matrix vector for one review.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Show the attention weights for sentence level:
+```python
+han.show_sent_attention(X)
+```
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`X` is the embedded matrix vector for reviews (could be multiple reviews).
+
+7. Truncate attention weights based on sentence length and number, and transform them into dataframe to make the result easily understandable:
+```python
+han.word_att_to_df(sent_tokenized_review, word_att)
+
+han.sent_att_to_df(sent_tokenized_reviews, sent_att)
+```

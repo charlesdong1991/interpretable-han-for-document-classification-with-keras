@@ -1,6 +1,8 @@
+import pandas as pd
 from keras.models import Model
 from keras.layers import Input, Embedding, Dense, GRU, Bidirectional, TimeDistributed, Lambda
 from keras.callbacks import ModelCheckpoint
+from nltk.tokenize import sent_tokenize
 
 from .attention import Attention
 
@@ -153,3 +155,61 @@ class HAN(Model):
         )(prev_tensor)
 
         return Model(self.model.input, dummy_layer).predict(x)
+
+    @staticmethod
+    def word_att_to_df(sent_tokenized_review, word_att):
+        """Convert the word attention arrays into pandas dataframe.
+
+        Args:
+            sent_tokenized_review: sentence tokenized review, which means sent_tokenize(review)
+                has to be executed beforehand. And only one review is allowed, since it's
+                on word attention level, and also it's the required input size in
+                self.show_word_attention, but review can contain multiple sentences.
+            word_att: attention weights obtained from self.show_word_attention.
+
+        Returns:
+            df: pandas.DataFrame, contains original reviews column and word_att column,
+                and word_att column is a list of dictionaries in which word as key while
+                corresponding weight as value.
+        """
+        # remove the trailing dot
+        ori_words = [i.rstrip('.') for i in sent_tokenized_review]
+        # obtain length of each sentence of review for truncation
+        ori_len = [len(i.split()) for i in ori_words]
+        # only get weights with equal size of sentence
+        truncated_att = [i[-k:] for i, k in zip(word_att, ori_len)]
+
+        # create word attetion pair as dictionary
+        word_att_pair = []
+        for i, j in zip(truncated_att, ori_words):
+            word_att_pair.append(dict(zip(j.split(), i)))
+
+        return pd.DataFrame([(x, y) for x, y in zip(word_att_pair, ori_words)],
+                            columns=['word_att', 'review'])
+        
+
+    @staticmethod
+    def sent_att_to_df(sent_tokenized_reviews, sent_att):
+        """Convert the sentence attention arrays into pandas dataframe.
+
+        Args:
+            sent_tokenized_reviews: sent tokenized reviews, if original input is a Series,
+                that means at least Series.apply(lambda x: sent_tokenize(x)) has to be
+                executed beforehand.
+            sent_att: sentence attention weight obtained from self.show_sent_attetion.
+
+        Returns:
+            df: pandas.DataFrame, contains original reviews column and sent_att column,
+                and sent_att column is a list of dictionaries in which sentence as key
+                while corresponding weight as value.
+        """
+        # create reviews attention pair list
+        reviews_atts = []
+        for review, atts in zip(sent_tokenized_reviews, sent_att):
+            review_list = []
+            for sent, att in zip(review, atts):
+                # each is a list of dictionaries
+                review_list.append({sent: att})
+            reviews_atts.append(review_list)
+        return pd.DataFrame([(x, y) for x, y in zip(reviews_atts, sent_tokenized_reviews)],
+                            columns=["sent_att", "review"])

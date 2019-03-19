@@ -27,4 +27,4 @@ han.print_summary()
 ```python
 han.train_model(checkpoint_path, X_train, y_train, X_test, y_test)
 ```
-And you could also tune the value of parameters.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;And you could also tune the value of parameters.

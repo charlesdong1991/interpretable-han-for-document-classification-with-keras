@@ -10,6 +10,8 @@ setup(
     description='An Keras inplementation of Hierarchical Attention Networks for document'
                 ' classification.',
     install_requires=[
-        'keras>=2.1.5'
+        'keras>=2.1.5',
+        'pandas>=0.23.4',
+        'nltk>=3.4'
     ]
 )

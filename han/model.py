@@ -186,7 +186,6 @@ class HAN(Model):
 
         return pd.DataFrame([(x, y) for x, y in zip(word_att_pair, ori_words)],
                             columns=['word_att', 'review'])
-        
 
     @staticmethod
     def sent_att_to_df(sent_tokenized_reviews, sent_att):

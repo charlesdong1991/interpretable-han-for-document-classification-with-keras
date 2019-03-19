@@ -28,3 +28,9 @@ han.print_summary()
 han.train_model(checkpoint_path, X_train, y_train, X_test, y_test)
 ```
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;And you could also tune the value of parameters.
+
+6. Show the attention weights for word level:
+```python
+han.show_word_attention(X)
+```
+X is the embedded matrix vector for one review.

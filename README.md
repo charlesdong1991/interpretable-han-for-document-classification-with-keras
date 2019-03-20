@@ -41,11 +41,12 @@ han.show_sent_attention(X)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`X` is the embedded matrix vector for reviews (could be multiple reviews).
 
 7. Truncate attention weights based on sentence length and number, and transform them into dataframe to make the result easily understandable:
+
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Regarding the word attention, running the line below will give you:
 ```python
 han.word_att_to_df(sent_tokenized_review, word_att)
 ```
-result will look like:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result will look like:
 
 word_att | review
 --- | ---
@@ -55,7 +56,7 @@ word_att | review
 ```python
 han.sent_att_to_df(sent_tokenized_reviews, sent_att)
 ```
-result will look like:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result will look like:
 
 sent_att | reviews
 --- | ---

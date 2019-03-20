@@ -41,8 +41,23 @@ han.show_sent_attention(X)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`X` is the embedded matrix vector for reviews (could be multiple reviews).
 
 7. Truncate attention weights based on sentence length and number, and transform them into dataframe to make the result easily understandable:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Regarding the word attention, running the line below will give you:
 ```python
 han.word_att_to_df(sent_tokenized_review, word_att)
+```
+result will look like:
 
+word_att | review
+--- | ---
+{'i':0.3, 'am': 0.1, 'wrong': 0.6} | i am wrong
+{'this': 0.1, 'is': 0.1, 'ridiculously': 0.4, 'good': 0.4 | this is ridiculously good
+
+```python
 han.sent_att_to_df(sent_tokenized_reviews, sent_att)
 ```
+result will look like:
+
+sent_att | reviews
+--- | ---
+{'this is good': 0.8, 'i am watching': 0.2} | this is good. i am watching.
+{'i like it': 0.6, 'it is about history': 0.4 | i like it. it is about history.}

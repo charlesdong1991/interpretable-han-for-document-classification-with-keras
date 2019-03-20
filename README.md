@@ -51,7 +51,7 @@ han.word_att_to_df(sent_tokenized_review, word_att)
 word_att | review
 --- | ---
 {'i':0.3, 'am': 0.1, 'wrong': 0.6} | i am wrong
-{'this': 0.1, 'is': 0.1, 'ridiculously': 0.4, 'good': 0.4 | this is ridiculously good
+{'this': 0.1, 'is': 0.1, 'ridiculously': 0.4, 'good': 0.4} | this is ridiculously good
 
 ```python
 han.sent_att_to_df(sent_tokenized_reviews, sent_att)
@@ -61,4 +61,4 @@ han.sent_att_to_df(sent_tokenized_reviews, sent_att)
 sent_att | reviews
 --- | ---
 {'this is good': 0.8, 'i am watching': 0.2} | this is good. i am watching.
-{'i like it': 0.6, 'it is about history': 0.4 | i like it. it is about history.}
+{'i like it': 0.6, 'it is about history': 0.4} | i like it. it is about history.

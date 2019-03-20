@@ -2,7 +2,6 @@ import pandas as pd
 from keras.models import Model
 from keras.layers import Input, Embedding, Dense, GRU, Bidirectional, TimeDistributed, Lambda
 from keras.callbacks import ModelCheckpoint
-from nltk.tokenize import sent_tokenize
 
 from .attention import Attention
 
@@ -30,6 +29,54 @@ class HAN(Model):
         super(HAN, self).__init__(name='han')
         self.build_model()
 
+    def build_word_encoder(self):
+        """Build word encoder.
+
+        The function starts with a Input tensor layer, and go through
+        Embedding layer and then Bidirectional GRU layer and
+        TimeDistributed layer and ends with Attention.
+
+        Returns:
+            Model, a model layer wraps sent_input and word attention.
+        """
+        sent_input = Input(shape=(self.max_sent_length,), dtype='float32')
+        embedded_sent = Embedding(
+            self.embeddings_matrix.shape[0], self.embeddings_matrix.shape[1],
+            weights=[self.embeddings_matrix], input_length=self.max_sent_length,
+            trainable=False
+        )(sent_input)
+
+        # For Bidirectional, devide by 2
+        encoded_sent = Bidirectional(
+            GRU(int(self.word_embed_dim / 2), return_sequences=True)
+        )(embedded_sent)
+        # TODO: check if dense is still needed in timedistributed
+        dense_sent = TimeDistributed(Dense(DENSE_SIZE))(encoded_sent)
+
+        word_att = Attention(name='word_attention')(dense_sent)
+
+        return Model(sent_input, word_att)
+
+    def build_sent_encoder(self, sent_encoder):
+        """Build sentence encoder.
+
+        Perform a Bidirectional GRU layer, and then a TimeDistributed
+         Dense layer before going to the Attention.
+
+        Args:
+            sent_encoder: the input sentence encoder.
+
+        Returns:
+            doc_att: sentence attention weights.
+        """
+        # For Bidirectional, devide by 2
+        encoded_text = Bidirectional(
+            GRU(int(self.sent_embed_dim / 2), return_sequences=True)
+        )(sent_encoder)
+        dense_text = TimeDistributed(Dense(DENSE_SIZE))(encoded_text)
+        doc_att = Attention(name='sent_attention')(dense_text)
+        return doc_att
+
     def build_model(self):
         """Build the embed and encode models for word and sentence.
 
@@ -43,32 +90,13 @@ class HAN(Model):
 
         There is no output, but will save the word and sentence models.
         """
-        sent_input = Input(shape=(self.max_sent_length,), dtype='float32')
-        embedded_sent = Embedding(
-            self.embeddings_matrix.shape[0], self.embeddings_matrix.shape[1],
-            weights=[self.embeddings_matrix], input_length=self.max_sent_length,
-            trainable=False
-        )(sent_input)
-
-        # For Bidirectional, devide by 2
-        encoded_sent = Bidirectional(
-            GRU(int(self.word_embed_dim / 2), return_sequences=True)
-        )(embedded_sent)
-        dense_sent = TimeDistributed(Dense(DENSE_SIZE))(encoded_sent)
-
-        word_att = Attention(name='word_attention')(dense_sent)
-        # create Word-level Model
-        self.model_word = Model(sent_input, word_att)
-
         text_input = Input(shape=(self.max_sent_num, self.max_sent_length))
+        # encode sentences into a single vector per sentence
+        self.model_word = self.build_word_encoder()
+        # time distribute word model to accept text input
         sent_encoder = TimeDistributed(self.model_word)(text_input)
 
-        # For Bidirectional, devide by 2
-        encoded_text = Bidirectional(
-            GRU(int(self.sent_embed_dim / 2), return_sequences=True)
-        )(sent_encoder)
-        dense_text = TimeDistributed(Dense(DENSE_SIZE))(encoded_text)
-        doc_att = Attention(name='sent_attention')(dense_text)
+        doc_att = self.build_sent_encoder(sent_encoder)
         # dense the output to 2 because the result is a binary classification.
         output_tensor = Dense(2, activation='softmax', name='classification')(doc_att)
         # Create Sentence-level Model
@@ -173,16 +201,16 @@ class HAN(Model):
                 corresponding weight as value.
         """
         # remove the trailing dot
-        ori_words = [i.rstrip('.') for i in sent_tokenized_review]
-        # obtain length of each sentence of review for truncation
-        ori_len = [len(i.split()) for i in ori_words]
-        # only get weights with equal size of sentence
-        truncated_att = [i[-k:] for i, k in zip(word_att, ori_len)]
+        ori_sents = [i.rstrip('.') for i in sent_tokenized_review]
+        # split sentences into words
+        ori_words = [x.split() for x in ori_sents]
+        # truncate attentions to have equal size of number of words per sentence
+        truncated_att = [i[-1 * len(k):] for i, k in zip(word_att, ori_words)]
 
         # create word attetion pair as dictionary
         word_att_pair = []
         for i, j in zip(truncated_att, ori_words):
-            word_att_pair.append(dict(zip(j.split(), i)))
+            word_att_pair.append(dict(zip(j, i)))
 
         return pd.DataFrame([(x, y) for x, y in zip(word_att_pair, ori_words)],
                             columns=['word_att', 'review'])

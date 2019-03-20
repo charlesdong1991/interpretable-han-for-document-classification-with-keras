@@ -11,7 +11,6 @@ setup(
                 ' classification.',
     install_requires=[
         'keras>=2.1.5',
-        'pandas>=0.23.4',
-        'nltk>=3.4'
+        'pandas>=0.23.4'
     ]
 )

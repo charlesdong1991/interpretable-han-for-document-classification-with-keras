@@ -35,14 +35,14 @@ class Attention(Layer):
             initializer=keras.initializers.get('uniform')
         )
 
-        self.u = self.add_weight(
-            name='context_vector', shape=(input_shape[-1],),
-            initializer=keras.initializers.get('uniform')
-        )
-
         self.b = self.add_weight(
             name='bias', shape=(input_shape[-1],),
             initializer='zero'
+        )
+
+        self.u = self.add_weight(
+            name='context_vector', shape=(input_shape[-1],),
+            initializer=keras.initializers.get('uniform')
         )
 
         super(Attention, self).build(input_shape)
@@ -54,13 +54,13 @@ class Attention(Layer):
         # Reshape the attention weights to match the dimensions of X
         att_weights = K.expand_dims(att_weights)
         # Multiply each input by its attention weights
+        # TODO: use backend function for multiply
         weighted_input = keras.layers.Multiply()([x, att_weights])
 
         # Sum in the direction of the time-axis.
         return K.sum(weighted_input, axis=1)
 
-    @staticmethod
-    def compute_output_shape(input_shape):
+    def compute_output_shape(self, input_shape):
         return input_shape[0], input_shape[-1]
 
     def _get_attention_weights(self, x):

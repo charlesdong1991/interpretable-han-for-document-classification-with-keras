@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/charlesdong1991/interpretable-han-for-document-classification-with-keras.svg?branch=master)](https://travis-ci.org/charlesdong1991/interpretable-han-for-document-classification-with-keras)
+
 # Interpretable-han-for-document-classfication-with-keras
 
 This repository uses Keras to implement the hierachical attention network presented in Hierarchical Attention Networks for Document Classification. [link](https://www.cs.cmu.edu/~hovy/papers/16HLT-hierarchical-attention-networks.pdf)

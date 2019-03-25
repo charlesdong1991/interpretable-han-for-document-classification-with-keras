@@ -10,8 +10,10 @@ stages:
 jobs:
   include:
     - stage: test
+      name: linting
       script:
-      - flake8
+      - flake8 --max-line-length 100
     - stage: test
+      name: tests
       script:
       - pytest

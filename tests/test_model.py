@@ -1,2 +1,2 @@
-def test_sample_len(testpath):
-    assert len(testpath) == 200
+def test_sample_len(df_review):
+    assert len(df_review) == 200

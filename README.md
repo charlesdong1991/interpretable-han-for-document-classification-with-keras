@@ -36,6 +36,7 @@ han.train_model(checkpoint_path, X_train, y_train, X_test, y_test)
 han.show_word_attention(X)
 ```
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`X` is the embedded matrix vector for one review.
+
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Show the attention weights for sentence level:
 ```python
 han.show_sent_attention(X)

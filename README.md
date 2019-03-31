@@ -7,7 +7,7 @@ This repository uses Keras to implement the hierachical attention network presen
 ## How to use the package
 
 1. Clone the repository.
-2. In the root of repo, run the `pip install .` to install all packages required.
+2. In the root of repo, run the `python setup.py install` to install all packages required.
 3. Import and initialize the class:
 
 ```python

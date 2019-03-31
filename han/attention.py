@@ -2,7 +2,7 @@ import keras
 from keras.engine.topology import Layer
 from keras import backend as K
 
-from utils import k_dot
+from han.utils import k_dot
 
 
 class Attention(Layer):

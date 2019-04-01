@@ -15,7 +15,7 @@ def testpath():
 
 @pytest.fixture
 def df_review():
-    return pd.read_csv(testpath)
+    return pd.read_csv(testpath())
 
 
 @pytest.fixture

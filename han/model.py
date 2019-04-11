@@ -41,8 +41,8 @@ class HAN(Model):
         """
         sent_input = Input(shape=(self.max_sent_length,), dtype='float32')
         embedded_sent = Embedding(
-            self.embeddings_matrix.shape[0], self.embeddings_matrix.shape[1],
-            weights=[self.embeddings_matrix], input_length=self.max_sent_length,
+            self.embedding_matrix.shape[0], self.embedding_matrix.shape[1],
+            weights=[self.embedding_matrix], input_length=self.max_sent_length,
             trainable=False
         )(sent_input)
 
